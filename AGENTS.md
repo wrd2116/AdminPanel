@@ -14,7 +14,7 @@ This file is for humans and AI coding agents. Read it at the start of substantiv
 ## Project snapshot
 
 - **Purpose:** Next.js **admin panel** backed by an **existing** database (read/write as designed; schema owned elsewhere).
-- **Status:** Greenfield / early — app structure and auth still to be implemented.
+- **Status:** Next.js admin UI with Google auth, superadmin gate, dashboard, and CRUD for images (profiles/captions read as specified).
 
 Update this section when the product direction and main user flows are clear.
 
@@ -31,7 +31,14 @@ Update this section when the product direction and main user flows are clear.
 
 ## Repository layout
 
-Document important paths here once they exist (e.g. `src/app/admin/`). Prefer a **single clear entrypoint** and conventional structure rather than premature abstraction.
+| Path | Role |
+|------|------|
+| `src/app/admin/*` | Protected admin UI (layout enforces superadmin) |
+| `src/app/login`, `src/app/auth/callback` | Google OAuth |
+| `src/lib/supabase/*` | Browser + server + middleware Supabase clients |
+| `src/lib/db/columns.ts` | Optional env overrides for nonstandard column names |
+| `src/lib/stats.ts` | Dashboard aggregations |
+| `.env.example` | Required public Supabase env vars (copy to `.env.local`) |
 
 ## Commands
 
