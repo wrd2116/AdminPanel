@@ -2,14 +2,12 @@
 
 import { createClient } from "@/lib/supabase/client";
 
-type Props = {
-  nextPath: string;
-};
-
-export function GoogleSignIn({ nextPath }: Props) {
+export function GoogleSignIn() {
   async function signIn() {
     const supabase = createClient();
-    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`;
+    // Keep callback URL as a path-only allowlist match (e.g. https://*.vercel.app/auth/callback).
+    // Avoid nested query params on redirect_to; shared gateways may fall back to Site URL.
+    const redirectTo = `${window.location.origin}/auth/callback`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo },

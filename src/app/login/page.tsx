@@ -37,7 +37,7 @@ export default async function LoginPage({ searchParams }: Props) {
             Sign-in failed. Try again or contact an administrator.
           </p>
         ) : null}
-        <GoogleSignIn nextPath={nextPath ?? "/admin"} />
+        <GoogleSignIn />
         <p className="text-center text-xs text-zinc-500">
           <Link href="/" className="underline-offset-2 hover:text-zinc-300 hover:underline">
             Back to home
