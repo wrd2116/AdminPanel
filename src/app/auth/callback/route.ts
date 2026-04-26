@@ -5,7 +5,8 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
-  const next = url.searchParams.get("next") ?? "/admin";
+  const nextParam = url.searchParams.get("next");
+  const next = nextParam && nextParam.startsWith("/") ? nextParam : "/admin";
 
   if (!code) {
     return NextResponse.redirect(
