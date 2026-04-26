@@ -8,8 +8,15 @@ export type SuperAdminContext = {
   profile: Pick<Profile, "id" | "email" | "full_name" | "is_superadmin">;
 };
 
-function isSuperAdminFlag(value: boolean | null | undefined): boolean {
-  return value === true;
+function isSuperAdminFlag(value: unknown): boolean {
+  if (value === true) return true;
+  if (typeof value === "string") {
+    return value.toLowerCase() === "true";
+  }
+  if (typeof value === "number") {
+    return value === 1;
+  }
+  return false;
 }
 
 export async function requireSuperAdmin(): Promise<SuperAdminContext> {
