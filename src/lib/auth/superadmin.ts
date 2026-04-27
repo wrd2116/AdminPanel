@@ -5,7 +5,7 @@ import type { Profile } from "@/lib/db/types";
 
 export type SuperAdminContext = {
   user: User;
-  profile: Pick<Profile, "id" | "email" | "full_name" | "is_superadmin">;
+  profile: Pick<Profile, "id" | "email" | "is_superadmin">;
 };
 
 function isSuperAdminFlag(value: unknown): boolean {
@@ -31,7 +31,7 @@ export async function requireSuperAdmin(): Promise<SuperAdminContext> {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("id, email, full_name, is_superadmin")
+    .select("id, email, is_superadmin")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -52,7 +52,6 @@ export type AuthProfileState =
       user: User;
       profile: {
         email: string | null;
-        full_name: string | null;
         is_superadmin: boolean | null;
       } | null;
       isSuperAdmin: boolean;
@@ -68,7 +67,7 @@ export async function getAuthProfileState(): Promise<AuthProfileState> {
   }
   const { data: profile } = await supabase
     .from("profiles")
-    .select("email, full_name, is_superadmin")
+    .select("email, is_superadmin")
     .eq("id", user.id)
     .maybeSingle();
   const isSuperAdmin = isSuperAdminFlag(profile?.is_superadmin);

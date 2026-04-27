@@ -10,7 +10,7 @@ export default async function AdminLayout({
 
   return (
     <AdminShell
-      displayName={profile.full_name ?? profile.email ?? "Superadmin"}
+      displayName={profile.email ?? "Superadmin"}
       email={profile.email}
     >
       {children}
