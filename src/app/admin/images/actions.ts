@@ -53,6 +53,48 @@ export async function createImageAction(formData: FormData) {
   revalidatePath("/admin");
 }
 
+export async function uploadImageAction(formData: FormData) {
+  const supabase = await assertSuperAdmin();
+  const file = formData.get("file");
+  if (!(file instanceof File)) {
+    throw new Error("Image file is required");
+  }
+  if (!file.type.startsWith("image/")) {
+    throw new Error("Only image uploads are supported");
+  }
+
+  const userId = emptyToNull(formData.get("user_id") as string | undefined);
+  const captionId = emptyToNull(
+    formData.get("caption_id") as string | undefined,
+  );
+
+  const bucket = process.env.NEXT_PUBLIC_IMAGE_UPLOAD_BUCKET ?? "images";
+  const ext = file.name.includes(".") ? file.name.split(".").pop() : "bin";
+  const path = `admin/${Date.now()}-${crypto.randomUUID()}.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from(bucket)
+    .upload(path, file, { contentType: file.type });
+  if (uploadError) {
+    throw new Error(uploadError.message);
+  }
+
+  const { data: publicData } = supabase.storage.from(bucket).getPublicUrl(path);
+
+  const row: Record<string, string | null> = {
+    [imageUrlColumn]: publicData.publicUrl || path,
+    user_id: userId,
+    caption_id: captionId,
+  };
+
+  const { error: insertError } = await supabase.from("images").insert(row);
+  if (insertError) {
+    throw new Error(insertError.message);
+  }
+  revalidatePath("/admin/images");
+  revalidatePath("/admin");
+}
+
 export async function updateImageAction(id: string, formData: FormData) {
   const supabase = await assertSuperAdmin();
   const urlRaw = (formData.get("url") as string | null) ?? "";

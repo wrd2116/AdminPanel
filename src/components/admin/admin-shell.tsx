@@ -6,6 +6,21 @@ const nav = [
   { href: "/admin/users", label: "Users" },
   { href: "/admin/images", label: "Images" },
   { href: "/admin/captions", label: "Captions" },
+  { href: "/admin/data/humor-flavors", label: "Humor flavors" },
+  { href: "/admin/data/humor-flavor-steps", label: "Flavor steps" },
+  { href: "/admin/data/humor-mix", label: "Humor mix" },
+  { href: "/admin/data/terms", label: "Terms" },
+  { href: "/admin/data/caption-requests", label: "Caption requests" },
+  { href: "/admin/data/caption-examples", label: "Caption examples" },
+  { href: "/admin/data/llm-models", label: "LLM models" },
+  { href: "/admin/data/llm-providers", label: "LLM providers" },
+  { href: "/admin/data/llm-prompt-chains", label: "Prompt chains" },
+  { href: "/admin/data/llm-responses", label: "LLM responses" },
+  { href: "/admin/data/allowed-signup-domains", label: "Signup domains" },
+  {
+    href: "/admin/data/whitelisted-email-addresses",
+    label: "Whitelisted emails",
+  },
 ];
 
 type Props = {
@@ -17,7 +32,7 @@ type Props = {
 export function AdminShell({ children, displayName, email }: Props) {
   return (
     <div className="flex min-h-full flex-1 bg-zinc-950 text-zinc-100">
-      <aside className="flex w-56 flex-col border-r border-zinc-800/80 bg-zinc-950/95 px-4 py-6">
+      <aside className="flex w-64 flex-col border-r border-zinc-800/80 bg-zinc-950/95 px-4 py-6">
         <div className="mb-8 px-2">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-400/90">
             Control
@@ -26,7 +41,7 @@ export function AdminShell({ children, displayName, email }: Props) {
             AdminPanel
           </p>
         </div>
-        <nav className="flex flex-1 flex-col gap-1">
+        <nav className="flex flex-1 flex-col gap-1 overflow-y-auto pr-1">
           {nav.map((item) => (
             <Link
               key={item.href}

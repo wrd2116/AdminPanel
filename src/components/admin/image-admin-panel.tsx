@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import {
   createImageAction,
   deleteImageAction,
+  uploadImageAction,
   updateImageAction,
 } from "@/app/admin/images/actions";
 import type { ImageRow } from "@/lib/db/types";
@@ -87,6 +88,64 @@ export function ImageAdminPanel({ initialImages }: Props) {
               className="rounded-lg bg-amber-500/90 px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-amber-400 disabled:opacity-50"
             >
               {pending ? "Saving…" : "Create"}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-6">
+        <h2 className="text-lg font-medium text-zinc-50">Upload new image</h2>
+        <p className="mt-1 text-sm text-zinc-500">
+          Uploads to Supabase Storage bucket{" "}
+          <code className="text-zinc-400">
+            {process.env.NEXT_PUBLIC_IMAGE_UPLOAD_BUCKET ?? "images"}
+          </code>{" "}
+          and inserts an <code className="text-zinc-400">images</code> row.
+        </p>
+        <form
+          className="mt-4 grid gap-3 md:grid-cols-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const fd = new FormData(e.currentTarget);
+            run(async () => {
+              await uploadImageAction(fd);
+              e.currentTarget.reset();
+            });
+          }}
+        >
+          <label className="block space-y-1 md:col-span-2">
+            <span className="text-xs font-medium text-zinc-500">Image file *</span>
+            <input
+              type="file"
+              name="file"
+              accept="image/*"
+              required
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 file:mr-3 file:rounded file:border-0 file:bg-zinc-800 file:px-2 file:py-1 file:text-xs file:text-zinc-200"
+            />
+          </label>
+          <label className="block space-y-1">
+            <span className="text-xs font-medium text-zinc-500">User id</span>
+            <input
+              name="user_id"
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none ring-amber-500/40 focus:ring-2"
+              placeholder="profiles.id (uuid)"
+            />
+          </label>
+          <label className="block space-y-1">
+            <span className="text-xs font-medium text-zinc-500">Caption id</span>
+            <input
+              name="caption_id"
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none ring-amber-500/40 focus:ring-2"
+              placeholder="captions.id (uuid)"
+            />
+          </label>
+          <div className="md:col-span-2">
+            <button
+              type="submit"
+              disabled={pending}
+              className="rounded-lg bg-amber-500/90 px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-amber-400 disabled:opacity-50"
+            >
+              {pending ? "Uploading…" : "Upload + Create row"}
             </button>
           </div>
         </form>
