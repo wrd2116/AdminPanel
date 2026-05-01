@@ -18,6 +18,10 @@ export type DashboardStats = {
   busiestDay: { date: string; count: number } | null;
   longestCaptionLen: number;
   recentImages: ReturnType<typeof mapImageRow>[];
+  captionVotesTotal: number;
+  captionUpvotesTotal: number;
+  captionDownvotesTotal: number;
+  captionNetScore: number;
 };
 
 function startIso(daysAgo: number): string {
@@ -57,6 +61,9 @@ export async function getDashboardStats(
     captionSample,
     recentRes,
     taggedImagesRes,
+    captionVotesTotalRes,
+    captionUpvotesRes,
+    captionDownvotesRes,
   ] = await Promise.all([
     supabase.from("profiles").select("id", { count: "exact", head: true }),
     supabase
@@ -88,6 +95,15 @@ export async function getDashboardStats(
       .order("created_at", { ascending: false })
       .limit(5),
     supabase.from("images").select("user_id").not("user_id", "is", null),
+    supabase.from("caption_votes").select("id", { count: "exact", head: true }),
+    supabase
+      .from("caption_votes")
+      .select("id", { count: "exact", head: true })
+      .eq("vote_value", 1),
+    supabase
+      .from("caption_votes")
+      .select("id", { count: "exact", head: true })
+      .eq("vote_value", -1),
   ]);
 
   const profilesTotal = profilesCount.count ?? 0;
@@ -139,6 +155,10 @@ export async function getDashboardStats(
   const recentImages = (recentRes.data ?? []).map((r) =>
     mapImageRow(r as unknown as Record<string, unknown>),
   );
+  const captionVotesTotal = captionVotesTotalRes.count ?? 0;
+  const captionUpvotesTotal = captionUpvotesRes.count ?? 0;
+  const captionDownvotesTotal = captionDownvotesRes.count ?? 0;
+  const captionNetScore = captionUpvotesTotal - captionDownvotesTotal;
 
   return {
     profilesTotal,
@@ -154,5 +174,9 @@ export async function getDashboardStats(
     busiestDay,
     longestCaptionLen,
     recentImages,
+    captionVotesTotal,
+    captionUpvotesTotal,
+    captionDownvotesTotal,
+    captionNetScore,
   };
 }

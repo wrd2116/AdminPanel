@@ -49,6 +49,33 @@ export default async function AdminDashboardPage() {
         />
       </section>
 
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          title="Caption votes"
+          value={stats.captionVotesTotal}
+          subtitle="Total rating actions across captions"
+          accent="from-fuchsia-500/20 to-transparent"
+        />
+        <StatCard
+          title="Upvotes"
+          value={stats.captionUpvotesTotal}
+          subtitle="Positive votes submitted"
+          accent="from-emerald-500/20 to-transparent"
+        />
+        <StatCard
+          title="Downvotes"
+          value={stats.captionDownvotesTotal}
+          subtitle="Negative votes submitted"
+          accent="from-rose-500/20 to-transparent"
+        />
+        <StatCard
+          title="Net score"
+          value={stats.captionNetScore}
+          subtitle="Upvotes minus downvotes"
+          accent="from-cyan-500/20 to-transparent"
+        />
+      </section>
+
       <section className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-4 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
           <div className="flex items-start justify-between gap-4">
