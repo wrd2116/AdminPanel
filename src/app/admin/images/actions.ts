@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { isSuperAdminFlag } from "@/lib/auth/superadmin";
 import { imageUrlColumn } from "@/lib/db/columns";
 import { createClient } from "@/lib/supabase/server";
 
@@ -12,12 +13,12 @@ async function assertSuperAdmin() {
   if (!user) {
     throw new Error("Unauthorized");
   }
-  const { data: profile } = await supabase
+  const { data: profile, error } = await supabase
     .from("profiles")
     .select("is_superadmin")
     .eq("id", user.id)
     .maybeSingle();
-  if (profile?.is_superadmin !== true) {
+  if (error || !isSuperAdminFlag(profile?.is_superadmin)) {
     throw new Error("Forbidden");
   }
   return supabase;

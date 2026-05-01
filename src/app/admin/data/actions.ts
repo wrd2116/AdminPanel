@@ -1,12 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { isSuperAdminFlag } from "@/lib/auth/superadmin";
 import { createClient } from "@/lib/supabase/server";
 import { getAdminDataConfigByTable } from "@/lib/admin/data-config";
-
-function isSuperAdminFlag(value: unknown): boolean {
-  return value === true || value === "true" || value === 1;
-}
 
 async function assertSuperAdmin() {
   const supabase = await createClient();

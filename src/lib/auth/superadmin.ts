@@ -8,7 +8,7 @@ export type SuperAdminContext = {
   profile: Pick<Profile, "id" | "email" | "is_superadmin">;
 };
 
-function isSuperAdminFlag(value: unknown): boolean {
+export function isSuperAdminFlag(value: unknown): boolean {
   if (value === true) return true;
   if (typeof value === "string") {
     return value.toLowerCase() === "true";
